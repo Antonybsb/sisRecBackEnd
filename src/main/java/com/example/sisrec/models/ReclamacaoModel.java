@@ -4,9 +4,9 @@ import com.example.sisrec.domain.enums.StatusReclamacao;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +20,13 @@ public class ReclamacaoModel {
     private UUID idReclamacao;
     private String descricao;
     private String localizacao;
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime dataReclamacao;
+
+    protected void onCreate() {
+        dataReclamacao = LocalDateTime.now();
+    }
 
 
     @ManyToOne

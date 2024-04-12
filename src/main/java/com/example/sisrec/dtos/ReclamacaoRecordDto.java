@@ -5,5 +5,5 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public record ReclamacaoRecordDto(@NotBlank String descricao, String localizacao, @NotNull LocalDateTime dataReclamacao) {
+public record ReclamacaoRecordDto(@NotBlank String descricao, String localizacao, LocalDateTime dataReclamacao) {
 }
