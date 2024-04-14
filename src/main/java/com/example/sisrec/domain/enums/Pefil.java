@@ -1,15 +1,16 @@
 package com.example.sisrec.domain.enums;
 
+import lombok.Getter;
+import lombok.Setter;
 
 
-
-public enum StatusReclamacao {
-    ABERTO(0, "ABERTO"), ANDAMENTO(1, "ANDAMENTO"), CONCLUIDA(2, "RESOLVIDO");
+public enum Pefil {
+    ADMIN(0, "ROLE_ADMIN"), CLIENTE(1, "ROLE_CLIENTE");
 
     private Integer codigo;
     private String descricao;
 
-    StatusReclamacao(Integer codigo, String descricao) {
+    Pefil(Integer codigo, String descricao) {
         this.codigo = codigo;
         this.descricao = descricao;
     }
@@ -26,12 +27,11 @@ public enum StatusReclamacao {
         if (cod == null) {
             return null;
         }
-            for(StatusReclamacao x : StatusReclamacao.values()) {
-                if (cod.equals(x.getCodigo())) {
-                    return x;
-                }
+        for(StatusReclamacao x : StatusReclamacao.values()) {
+            if (cod.equals(x.getCodigo())) {
+                return x;
             }
-            throw new IllegalArgumentException("Reclamação iválida");
         }
-
+        throw new IllegalArgumentException("Perfil iválido");
+    }
 }
