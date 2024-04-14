@@ -1,4 +1,4 @@
-package com.example.sisrec.domain.enums;
+package com.example.sisrec.enums;
 
 
 

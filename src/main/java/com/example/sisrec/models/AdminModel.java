@@ -1,6 +1,5 @@
-package com.example.sisrec.domain.enums;
+package com.example.sisrec.models;
 
-import com.example.sisrec.models.ReclamacaoModel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -13,16 +12,16 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Admin extends Pessoa{
+public class AdminModel extends PessoaModel {
 
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "adminModel")
     private List<ReclamacaoModel> reclamacaoModels = new ArrayList<>();
 
-    public Admin() {
+    public AdminModel() {
         super();
     }
 
-    public Admin(UUID idPessoa, String nome, String cpf, String email, String senha) {
+    public AdminModel(UUID idPessoa, String nome, String cpf, String email, String senha) {
         super(idPessoa, nome, cpf, email, senha);
     }
 }

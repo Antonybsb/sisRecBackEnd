@@ -1,8 +1,6 @@
 package com.example.sisrec.models;
 
-import com.example.sisrec.domain.enums.Admin;
-import com.example.sisrec.domain.enums.StatusReclamacao;
-import com.example.sisrec.domain.enums.Usuario;
+import com.example.sisrec.enums.StatusReclamacao;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,23 +29,23 @@ public class ReclamacaoModel {
 
 
     @ManyToOne
-    private Admin admin;
+    private AdminModel adminModel;
 
     @ManyToOne
-    private Usuario usuario;
+    private UsuarioModel usuarioModel;
     public ReclamacaoModel() {
         super();
     }
 
-    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao, Admin admin, Usuario usuario) {
+    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao, AdminModel adminModel, UsuarioModel usuarioModel) {
         this.idReclamacao = idReclamacao;
         this.local = local;
         this.titulo = titulo;
         this.descricao = descricao;
         this.sugestaoResolucao = sugestaoResolucao;
         this.statusReclamacao = statusReclamacao;
-        this.admin = admin;
-        this.usuario = usuario;
+        this.adminModel = adminModel;
+        this.usuarioModel = usuarioModel;
     }
 
     //    @ManyToOne

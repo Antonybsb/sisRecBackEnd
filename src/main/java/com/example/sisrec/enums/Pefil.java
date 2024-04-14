@@ -1,7 +1,4 @@
-package com.example.sisrec.domain.enums;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.example.sisrec.enums;
 
 
 public enum Pefil {
