@@ -1,5 +1,7 @@
 package com.example.sisrec.models;
 
+import com.example.sisrec.dtos.AdminRecordDto;
+import com.example.sisrec.enums.Perfil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -19,9 +21,14 @@ public class AdminModel extends PessoaModel {
 
     public AdminModel() {
         super();
+        addPerfil(Perfil.ADMIN);
     }
+
+
+
 
     public AdminModel(UUID idPessoa, String nome, String cpf, String email, String senha) {
         super(idPessoa, nome, cpf, email, senha);
+        addPerfil(Perfil.ADMIN);
     }
 }

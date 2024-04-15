@@ -1,13 +1,13 @@
 package com.example.sisrec.enums;
 
 
-public enum Pefil {
-    ADMIN(0, "ROLE_ADMIN"), CLIENTE(1, "ROLE_CLIENTE");
+public enum Perfil {
+    ADMIN(0, "ROLE_ADMIN"), USUARIO(1, "ROLE_USUARIO");
 
     private Integer codigo;
     private String descricao;
 
-    Pefil(Integer codigo, String descricao) {
+    Perfil(Integer codigo, String descricao) {
         this.codigo = codigo;
         this.descricao = descricao;
     }
@@ -20,11 +20,11 @@ public enum Pefil {
         return descricao;
     }
 
-    public static StatusReclamacao toEnum(Integer cod) {
+    public static Perfil toEnum(Integer cod) {
         if (cod == null) {
             return null;
         }
-        for(StatusReclamacao x : StatusReclamacao.values()) {
+        for(Perfil x : Perfil.values()) {
             if (cod.equals(x.getCodigo())) {
                 return x;
             }

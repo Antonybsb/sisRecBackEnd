@@ -1,5 +1,6 @@
 package com.example.sisrec.models;
 
+import com.example.sisrec.enums.Perfil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -20,10 +21,12 @@ public class UsuarioModel extends PessoaModel {
 
     public UsuarioModel() {
         super();
+        addPerfil(Perfil.USUARIO);
     }
 
     public UsuarioModel(UUID idPessoa, String nome, String cpf, String email, String senha) {
         super(idPessoa, nome, cpf, email, senha);
+        addPerfil(Perfil.USUARIO);
     }
 
 }
