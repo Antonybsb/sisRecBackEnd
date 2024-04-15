@@ -37,8 +37,10 @@ public class ReclamacaoModel {
         super();
     }
 
-    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao, AdminModel adminModel, UsuarioModel usuarioModel) {
+    public ReclamacaoModel(UUID idReclamacao, LocalDate dataAberturaReclamacao, LocalDate dataEncerramentoReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao, AdminModel adminModel, UsuarioModel usuarioModel) {
         this.idReclamacao = idReclamacao;
+        this.dataAberturaReclamacao = dataAberturaReclamacao;
+        this.dataEncerramentoReclamacao = dataEncerramentoReclamacao;
         this.local = local;
         this.titulo = titulo;
         this.descricao = descricao;
