@@ -2,12 +2,19 @@ package com.example.sisrec.controllers;
 
 import com.example.sisrec.dtos.ReclamacaoRecordDto;
 import com.example.sisrec.models.ReclamacaoModel;
+import com.example.sisrec.models.UsuarioModel;
+import com.example.sisrec.repositories.UsuarioRepository;
 import com.example.sisrec.services.ReclamacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -15,9 +22,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@RestController
+@RestController()
 @RequestMapping("/reclamacoes")
 public class ReclamacaoController {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+
 
     final ReclamacaoService reclamacaoService;
 
@@ -25,14 +37,31 @@ public class ReclamacaoController {
         this.reclamacaoService = reclamacaoService;
     }
 
-
-        @PostMapping
+    @PostMapping
     public ResponseEntity<ReclamacaoModel> saveReclamacao(@RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // Buscar usuário baseado no username (login) recuperado do UserDetails
+        UsuarioModel usuario = usuarioRepository.findByLogin(userDetails.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
         var reclamacaoModel = new ReclamacaoModel();
         BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
+        reclamacaoModel.setUsuario(usuario);
         reclamacaoModel.setDataAberturaReclamacao(LocalDate.now(ZoneId.of("UTC")));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoService.save(reclamacaoModel));
     }
+
+
+//        @PostMapping
+//    public ResponseEntity<ReclamacaoModel> saveReclamacao(@RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
+//        var reclamacaoModel = new ReclamacaoModel();
+//        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
+//        reclamacaoModel.setDataAberturaReclamacao(LocalDate.now(ZoneId.of("UTC")));
+//        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoService.save(reclamacaoModel));
+//    }
 
     @GetMapping
     public ResponseEntity<List<ReclamacaoModel>> getAllReclamacoes() {

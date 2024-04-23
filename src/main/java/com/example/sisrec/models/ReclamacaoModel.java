@@ -2,8 +2,10 @@ package com.example.sisrec.models;
 
 import com.example.sisrec.enums.StatusReclamacao;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -15,6 +17,7 @@ import java.util.UUID;
 @Table(name = "TB_RECLAMACAO")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReclamacaoModel implements Serializable {
 
     @Id
@@ -24,6 +27,7 @@ public class ReclamacaoModel implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataAberturaReclamacao = LocalDate.now();
 
+    @Transient
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataEncerramentoReclamacao;
     private String local;
@@ -31,29 +35,25 @@ public class ReclamacaoModel implements Serializable {
     private String descricao;
     private String sugestaoResolucao;
 
+    @Transient
     @Enumerated(EnumType.ORDINAL)
     private StatusReclamacao statusReclamacao;
 
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private AdminModel adminModel;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
-    private UsuarioModel usuarioModel;
-    public ReclamacaoModel() {
-        super();
-    }
+    @JsonIgnore
+    private UsuarioModel usuario;
 
-    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao, AdminModel adminModel, UsuarioModel usuarioModel) {
+
+    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao,  UsuarioModel usuarioModel) {
         this.idReclamacao = idReclamacao;
         this.local = local;
         this.titulo = titulo;
         this.descricao = descricao;
         this.sugestaoResolucao = sugestaoResolucao;
         this.statusReclamacao = statusReclamacao;
-        this.adminModel = adminModel;
-        this.usuarioModel = usuarioModel;
+
+//        this.usuarioModel = usuarioModel;
     }
 
     @Override
@@ -68,14 +68,14 @@ public class ReclamacaoModel implements Serializable {
         return Objects.hash(getIdReclamacao());
     }
 
-    //    @ManyToOne
+//    @ManyToOne
 //    @JoinColumn(name = "categoria_id_categoria")
 //    private CategoriaModel categoria;
-//
+
 //    @ManyToOne
 //    @JoinColumn(name = "usuario_id_usuario")
 //    private UsuarioModel usuario;
-//
+
 //    @Enumerated(EnumType.STRING)
 //    private StatusReclamacao status;
 
