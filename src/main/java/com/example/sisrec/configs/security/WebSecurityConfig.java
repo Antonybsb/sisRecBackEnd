@@ -33,7 +33,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/reclamacoes").hasRole("USUARIO")
                         .requestMatchers(HttpMethod.DELETE,"/reclamacoes").permitAll()
                         .requestMatchers(HttpMethod.GET,"/reclamacoes").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/usuario").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/usuario").permitAll()
                         .anyRequest().authenticated()
 
                 )

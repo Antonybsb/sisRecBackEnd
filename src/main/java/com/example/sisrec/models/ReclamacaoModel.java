@@ -68,16 +68,5 @@ public class ReclamacaoModel implements Serializable {
         return Objects.hash(getIdReclamacao());
     }
 
-//    @ManyToOne
-//    @JoinColumn(name = "categoria_id_categoria")
-//    private CategoriaModel categoria;
-
-//    @ManyToOne
-//    @JoinColumn(name = "usuario_id_usuario")
-//    private UsuarioModel usuario;
-
-//    @Enumerated(EnumType.STRING)
-//    private StatusReclamacao status;
-
 
 }

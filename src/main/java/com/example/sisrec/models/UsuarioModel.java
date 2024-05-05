@@ -24,13 +24,13 @@ public class UsuarioModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idPessoa;
-    private String login;
+    private String nome;
     @Column(unique = true)
     private String cpf;
     @Column(unique = true)
     private String email;
     private String password;
-    private UserRole role;
+    private UserRole role = UserRole.USUARIO;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDate();
@@ -38,13 +38,11 @@ public class UsuarioModel implements UserDetails {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReclamacaoModel> reclamacoes;
 
-    public UsuarioModel(String login, String cpf, String email, String password, UserRole role, LocalDate dataCriacao){
-        this.login = login;
+    public UsuarioModel(String nome, String cpf, String email, String password) {
+        this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.password = password;
-        this.role = role;
-        this.dataCriacao = dataCriacao;
     }
 
     @Override
@@ -60,7 +58,7 @@ public class UsuarioModel implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.login;
+        return this.nome;
     }
 
     @Override

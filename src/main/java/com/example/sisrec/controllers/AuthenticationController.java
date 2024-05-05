@@ -2,7 +2,7 @@ package com.example.sisrec.controllers;
 
 import com.example.sisrec.services.TokenService;
 import com.example.sisrec.dtos.AuthenticationRecordDTO;
-import com.example.sisrec.dtos.LoginResponseDTO;
+import com.example.sisrec.dtos.NomeResponseDTO;
 import com.example.sisrec.dtos.RegistroDTO;
 import com.example.sisrec.models.UsuarioModel;
 import com.example.sisrec.repositories.UserRepository;
@@ -32,27 +32,25 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     ResponseEntity login(@RequestBody @Valid AuthenticationRecordDTO data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((UsuarioModel) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new NomeResponseDTO(token));
     }
 
     @PostMapping("/registro")
     public ResponseEntity registro(@RequestBody @Valid RegistroDTO data) {
-        if (this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+        if (this.repository.findByEmail(data.nome()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         LocalDate today = LocalDate.now();
         UsuarioModel newUser = new UsuarioModel(
-                data.login(),
+                data.nome(),
                 data.cpf(),
                 data.email(),
-                encryptedPassword,
-                data.role(),
-                today);
+                encryptedPassword);
 
         this.repository.save(newUser);
         return ResponseEntity.ok().build();

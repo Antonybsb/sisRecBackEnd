@@ -1,4 +1,4 @@
 package com.example.sisrec.dtos;
 
-public record AuthenticationRecordDTO(String login, String password) {
+public record AuthenticationRecordDTO(String email, String password) {
 }

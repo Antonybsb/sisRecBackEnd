@@ -43,7 +43,7 @@ public class ReclamacaoController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         // Buscar usuário baseado no username (login) recuperado do UserDetails
-        UsuarioModel usuario = usuarioRepository.findByLogin(userDetails.getUsername())
+        UsuarioModel usuario = usuarioRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         var reclamacaoModel = new ReclamacaoModel();
