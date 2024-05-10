@@ -1,6 +1,6 @@
 package com.example.sisrec.models;
 
-import com.example.sisrec.enums.UserRole;
+import com.example.sisrec.enums.UsuarioRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class RoleModel implements GrantedAuthority, Serializable {
     private UUID roleId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private UserRole userRole;
+    private UsuarioRole userRole;
 
 
 

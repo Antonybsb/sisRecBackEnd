@@ -1,23 +1,16 @@
 package com.example.sisrec.controllers;
 
-import com.example.sisrec.dtos.ReclamacaoRecordDto;
 import com.example.sisrec.models.ReclamacaoModel;
 import com.example.sisrec.models.UsuarioModel;
+import com.example.sisrec.repositories.ReclamacaoRepository;
 import com.example.sisrec.repositories.UsuarioRepository;
 import com.example.sisrec.services.ReclamacaoService;
-import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,81 +19,86 @@ import java.util.UUID;
 @RequestMapping("/reclamacoes")
 public class ReclamacaoController {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
-
-
-    final ReclamacaoService reclamacaoService;
+    private  final ReclamacaoService reclamacaoService;
 
     public ReclamacaoController(ReclamacaoService reclamacaoService) {
         this.reclamacaoService = reclamacaoService;
     }
 
+    @Autowired
+    private ReclamacaoRepository reclamacaoRepository;
+
+    @Autowired
+    private UsuarioRepository userRepository;
+
     @PostMapping
-    public ResponseEntity<ReclamacaoModel> saveReclamacao(@RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    public ResponseEntity<ReclamacaoModel> criarReclamacao(@RequestBody ReclamacaoModel novaReclamacao, @AuthenticationPrincipal UsuarioModel usuario) {
+        novaReclamacao.setUsuario(usuario);
 
-        // Buscar usuário baseado no username (login) recuperado do UserDetails
-        UsuarioModel usuario = usuarioRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        ReclamacaoModel reclamacaoSalva = reclamacaoRepository.save(novaReclamacao);
 
-        var reclamacaoModel = new ReclamacaoModel();
-        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
-        reclamacaoModel.setUsuario(usuario);
-        reclamacaoModel.setDataAberturaReclamacao(LocalDate.now(ZoneId.of("UTC")));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoService.save(reclamacaoModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoSalva);
     }
 
-
-//        @PostMapping
-//    public ResponseEntity<ReclamacaoModel> saveReclamacao(@RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
-//        var reclamacaoModel = new ReclamacaoModel();
-//        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
-//        reclamacaoModel.setDataAberturaReclamacao(LocalDate.now(ZoneId.of("UTC")));
-//        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoService.save(reclamacaoModel));
-//    }
 
     @GetMapping
-    public ResponseEntity<List<ReclamacaoModel>> getAllReclamacoes() {
-        return ResponseEntity.status(HttpStatus.OK).body(reclamacaoService.findAll());
-    }
+    public ResponseEntity<List<ReclamacaoModel>> buscarTodasReclamacoes() {
+        List<ReclamacaoModel> reclamacoes = reclamacaoService.buscarTodasReclamacoes();
+            return ResponseEntity.status(HttpStatus.OK).body(reclamacoes);
+        }
+
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneReclamacao(@PathVariable(value = "id") UUID id){
-        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.findById(id);
+    public ResponseEntity<Object> getOneReclamacao(@PathVariable(value = "id") UUID id) {
+        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.buscarReclamacaoPorId(id);
         if (reclamacaoO.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
         }
         return ResponseEntity.status(HttpStatus.OK).body((reclamacaoO.get()));
     }
 
-        @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteReclamacao(@PathVariable(value="id") UUID id) {
-        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.findById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletarReclamacao(@PathVariable(value = "id") UUID id) {
+        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.deletarReclamacao(id);
         if (reclamacaoO.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
         }
-        reclamacaoService.delete(reclamacaoO.get());
+        reclamacaoService.deletarReclamacao(id);
         return ResponseEntity.status(HttpStatus.OK).body("Reclamação deletada com sucesso.");
     }
 
-        @PutMapping("/{id}")
-    public ResponseEntity<Object> updateReclamacao(@PathVariable(value="id") UUID id,
-        @RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
-        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.findById(id);
-        if (reclamacaoO.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
+
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Object> atualizarReclamacao(@PathVariable(value = "id") UUID id,
+//                                                      @RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
+//        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.atualizarReclamacao(id);
+//        if (reclamacaoO.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
+//        }
+//        var reclamacaoModel = reclamacaoO.get();
+//        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
+//        //Para não setar o Id e nem a data de abertura quando atualizar
+////       reclamacaoModel.setIdReclamacao(reclamacaoO.get().getIdReclamacao());
+////       reclamacaoModel.setDataAberturaReclamacao(reclamacaoO.get().getDataAberturaReclamacao());
+//        return ResponseEntity.status(HttpStatus.OK).body(reclamacaoService.save(reclamacaoModel));
+//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> atualizarReclamacao(@PathVariable UUID id, @RequestBody ReclamacaoModel reclamacao) {
+        Optional<ReclamacaoModel> atualizada = reclamacaoService.atualizarReclamacao(id, reclamacao);
+        if (atualizada.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        var reclamacaoModel = reclamacaoO.get();
-        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
-        //Para não setar o Id e nem a data de abertura quando atualizar
-//       reclamacaoModel.setIdReclamacao(reclamacaoO.get().getIdReclamacao());
-//       reclamacaoModel.setDataAberturaReclamacao(reclamacaoO.get().getDataAberturaReclamacao());
-        return ResponseEntity.status(HttpStatus.OK).body(reclamacaoService.save(reclamacaoModel));
+        return ResponseEntity.ok().build();
     }
+
+
+
+
+}
 
 
 
@@ -154,4 +152,3 @@ public class ReclamacaoController {
 //    }
 
 
-}

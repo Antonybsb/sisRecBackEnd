@@ -1,6 +1,6 @@
 package com.example.sisrec.models;
 
-import com.example.sisrec.enums.UserRole;
+import com.example.sisrec.enums.UsuarioRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.time.*;
 import java.util.Collection;
 import java.util.List;
@@ -17,9 +18,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "TB_USUARIOS")
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class UsuarioModel implements UserDetails {
+public class UsuarioModel implements UserDetails, Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +33,7 @@ public class UsuarioModel implements UserDetails {
     @Column(unique = true)
     private String email;
     private String password;
-    private UserRole role = UserRole.USUARIO;
+    private UsuarioRole role = UsuarioRole.USUARIO;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDate();
@@ -47,7 +50,7 @@ public class UsuarioModel implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USUARIO"));
+        if (this.role == UsuarioRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USUARIO"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USUARIO"));
     }
 
@@ -58,7 +61,7 @@ public class UsuarioModel implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.nome;
+        return this.email;
     }
 
     @Override

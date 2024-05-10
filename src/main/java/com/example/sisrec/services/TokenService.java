@@ -23,7 +23,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("sisrec-api")
-                    .withSubject(usuarioModel.getNome())
+                    .withSubject(usuarioModel.getEmail())
                     .withExpiresAt(geraExpiration())
                     .sign(algorithm);
             return token;

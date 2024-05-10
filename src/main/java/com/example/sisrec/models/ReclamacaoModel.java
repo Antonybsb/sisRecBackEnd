@@ -53,7 +53,7 @@ public class ReclamacaoModel implements Serializable {
         this.sugestaoResolucao = sugestaoResolucao;
         this.statusReclamacao = statusReclamacao;
 
-//        this.usuarioModel = usuarioModel;
+        this.usuario = usuarioModel;
     }
 
     @Override

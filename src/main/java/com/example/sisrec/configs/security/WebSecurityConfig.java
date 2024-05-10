@@ -11,18 +11,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
-
+public class WebSecurityConfig  {
     @Autowired
-    SecurityFilter securityFilter;
+    private SecurityFilterChain securityFilterChain;
+
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public org.springframework.security.web.SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -30,14 +29,14 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/registro").permitAll()
                         .requestMatchers(HttpMethod.POST,"/reclamacoes").hasRole("USUARIO")
-                        .requestMatchers(HttpMethod.PUT,"/reclamacoes").hasRole("USUARIO")
+                        .requestMatchers(HttpMethod.PUT,"/reclamacoes").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/reclamacoes").permitAll()
                         .requestMatchers(HttpMethod.GET,"/reclamacoes").permitAll()
                         .requestMatchers(HttpMethod.GET,"/usuario").permitAll()
                         .anyRequest().authenticated()
 
                 )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(securityFilterChain, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -46,6 +45,7 @@ public class WebSecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    //Encoda a senha no banco de dados
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
