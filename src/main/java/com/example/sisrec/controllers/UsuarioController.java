@@ -1,6 +1,5 @@
 package com.example.sisrec.controllers;
 
-import com.example.sisrec.models.ReclamacaoModel;
 import com.example.sisrec.models.UsuarioModel;
 import com.example.sisrec.services.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -21,51 +20,34 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-
-
-
-//    @GetMapping
-//    public ResponseEntity<List<UsuarioModel>> getAllUsuarios() {
-//        List<UsuarioModel> usuarios = usuarioService.findAll();
-//        return ResponseEntity.ok(usuarios);
-//    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioModel> buscarPorId(@PathVariable UUID id) {
-        Optional<UsuarioModel> usuarioO = usuarioService.buscarPorId(id);
-        return usuarioO.map(usuario -> ResponseEntity.ok().body(usuario))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    //erro aqui
     @GetMapping
     public ResponseEntity<List<UsuarioModel>> buscarTodos() {
         List<UsuarioModel> usuarios = usuarioService.buscartodos();
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioModel> buscarPorId(@PathVariable UUID id) {
+        Optional<UsuarioModel> usuarioO = usuarioService.buscarUsuarioPorId(id);
+        return usuarioO.map(usuario -> ResponseEntity.ok().body(usuario))
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizar(@PathVariable UUID id, @RequestBody UsuarioModel usuario) {
-        Optional<UsuarioModel> usuarioO = usuarioService.buscarPorId(id);
-        if (usuarioO.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        usuario.setIdPessoa(id);
-        usuarioService.atualizar(usuario);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UsuarioModel> atualizarUsuario(@PathVariable UUID id, @RequestBody UsuarioModel usuarioModel) {
+        return usuarioService.atualizarUsuario(id, usuarioModel)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletar(@PathVariable UUID id) {
-        Optional<UsuarioModel> usuarioO = usuarioService.buscarPorId(id);
-        if (usuarioO.isEmpty()) {
+    public ResponseEntity<?> deletarUsuario(@PathVariable UUID id) {
+        Optional<UsuarioModel> usuarioDeletado = usuarioService.deletarUsuario(id);
+        if (usuarioDeletado.isPresent()) {
+            return ResponseEntity.ok().body("Usuário deletado com sucesso.");
+        } else {
             return ResponseEntity.notFound().build();
         }
-        usuarioService.deletar(id);
-        return ResponseEntity.ok().build();
     }
-
 
 }

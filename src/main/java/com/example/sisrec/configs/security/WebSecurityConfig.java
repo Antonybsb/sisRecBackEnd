@@ -28,11 +28,16 @@ public class WebSecurityConfig  {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/registro").permitAll()
+
                         .requestMatchers(HttpMethod.POST,"/reclamacoes").hasRole("USUARIO")
+                        .requestMatchers(HttpMethod.GET,"/reclamacoes").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/reclamacoes").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/reclamacoes").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/reclamacoes").permitAll()
+
+                        .requestMatchers(HttpMethod.POST,"/usuario").permitAll()
                         .requestMatchers(HttpMethod.GET,"/usuario").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/usuario").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/usuario").permitAll()
                         .anyRequest().authenticated()
 
                 )

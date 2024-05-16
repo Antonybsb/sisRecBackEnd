@@ -4,6 +4,7 @@ import com.example.sisrec.enums.UsuarioRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +39,8 @@ public class UsuarioModel implements UserDetails, Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDate();
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)  // Adicionando BatchSize para otimizar o carregamento das reclamações
     private List<ReclamacaoModel> reclamacoes;
 
     public UsuarioModel(String nome, String cpf, String email, String password) {
@@ -46,6 +48,14 @@ public class UsuarioModel implements UserDetails, Serializable {
         this.cpf = cpf;
         this.email = email;
         this.password = password;
+    }
+
+    //Método para atualizar os atributos do usuário com exceção de idPessoa, cpf, e dataCriacao.
+    public void update(UsuarioModel source) {
+        this.nome = source.nome;
+        this.email = source.email;
+        this.password = source.password;
+        this.role = source.role;
     }
 
     @Override

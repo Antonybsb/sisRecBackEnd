@@ -49,7 +49,6 @@ public class ReclamacaoController {
         }
 
 
-
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneReclamacao(@PathVariable(value = "id") UUID id) {
         Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.buscarReclamacaoPorId(id);
@@ -65,26 +64,9 @@ public class ReclamacaoController {
         if (reclamacaoO.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
         }
-        reclamacaoService.deletarReclamacao(id);
         return ResponseEntity.status(HttpStatus.OK).body("Reclamação deletada com sucesso.");
     }
 
-
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Object> atualizarReclamacao(@PathVariable(value = "id") UUID id,
-//                                                      @RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
-//        Optional<ReclamacaoModel> reclamacaoO = reclamacaoService.atualizarReclamacao(id);
-//        if (reclamacaoO.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
-//        }
-//        var reclamacaoModel = reclamacaoO.get();
-//        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
-//        //Para não setar o Id e nem a data de abertura quando atualizar
-////       reclamacaoModel.setIdReclamacao(reclamacaoO.get().getIdReclamacao());
-////       reclamacaoModel.setDataAberturaReclamacao(reclamacaoO.get().getDataAberturaReclamacao());
-//        return ResponseEntity.status(HttpStatus.OK).body(reclamacaoService.save(reclamacaoModel));
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> atualizarReclamacao(@PathVariable UUID id, @RequestBody ReclamacaoModel reclamacao) {
@@ -95,9 +77,6 @@ public class ReclamacaoController {
         return ResponseEntity.ok().build();
     }
 
-
-
-
 }
 
 
@@ -105,50 +84,5 @@ public class ReclamacaoController {
 
 
 
-    //    @Autowired
-//    ReclamacaoRepository reclamacaoRepository;
-//
-//    @PostMapping("/reclamacoes")
-//    public ResponseEntity<ReclamacaoModel> saveReclamacao(@RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
-//        var reclamacaoModel = new ReclamacaoModel();
-//        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoRepository.save(reclamacaoModel));
-//    }
-//
-//    @GetMapping("/reclamacoes")
-//    public ResponseEntity<List<ReclamacaoModel>> getAllReclamacoes() {
-//        return ResponseEntity.status(HttpStatus.OK).body(reclamacaoRepository.findAll());
-//    }
-//
-//    @GetMapping("/reclamacoes/{id}")
-//    public ResponseEntity<Object> getOneReclamacao(@PathVariable(value = "id") UUID id){
-//        Optional<ReclamacaoModel> reclamacaoO = reclamacaoRepository.findById(id);
-//        if (reclamacaoO.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body((reclamacaoO.get()));
-//    }
-//
-//    @PutMapping("/reclamacoes/{id}")
-//    public ResponseEntity<Object> updateReclamacao(@PathVariable(value="id") UUID id,
-//        @RequestBody @Valid ReclamacaoRecordDto reclamacaoRecordDto) {
-//        Optional<ReclamacaoModel> reclamacaoO = reclamacaoRepository.findById(id);
-//        if (reclamacaoO.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
-//        }
-//        var reclamacaoModel = reclamacaoO.get();
-//        BeanUtils.copyProperties(reclamacaoRecordDto, reclamacaoModel);
-//        return ResponseEntity.status(HttpStatus.OK).body(reclamacaoRepository.save(reclamacaoModel));
-//    }
-//
-//    @DeleteMapping("/reclamacoes/{id}")
-//    public ResponseEntity<Object> updateReclamacao(@PathVariable(value="id") UUID id) {
-//        Optional<ReclamacaoModel> reclamacaoO = reclamacaoRepository.findById(id);
-//        if (reclamacaoO.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reclamação não encontrada.");
-//        }
-//        reclamacaoRepository.delete(reclamacaoO.get());
-//        return ResponseEntity.status(HttpStatus.OK).body("Reclamação deletada com sucesso.");
-//    }
 
 

@@ -44,8 +44,13 @@ public class ReclamacaoService {
 
 
     public Optional<ReclamacaoModel> deletarReclamacao(UUID id) {
-        reclamacaoRepository.deleteById(id);
-        return null;
+        Optional<ReclamacaoModel> reclamacaoExistente = reclamacaoRepository.findById(id);
+        if (reclamacaoExistente.isPresent()) {
+            reclamacaoRepository.deleteById(id);
+            return reclamacaoExistente;
+        } else {
+            return Optional.empty();
+        }
     }
 
 

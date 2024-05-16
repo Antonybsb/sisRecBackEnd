@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
@@ -63,7 +65,9 @@ public class AuthenticationController {
                 encryptedPassword);
 
         this.repository.save(newUser);
-        return ResponseEntity.ok("Usuário registrado com sucesso!");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Usuário registrado com sucesso!");
+        return ResponseEntity.ok(response);
 
 
     }
