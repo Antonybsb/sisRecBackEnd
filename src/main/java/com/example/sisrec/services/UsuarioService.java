@@ -3,6 +3,8 @@ package com.example.sisrec.services;
 import com.example.sisrec.models.UsuarioModel;
 import com.example.sisrec.repositories.UsuarioRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +14,10 @@ import java.util.UUID;
 @Service
 public class UsuarioService {
 
+
     private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -28,12 +33,17 @@ public class UsuarioService {
 
     public Optional<UsuarioModel> atualizarUsuario(UUID id, UsuarioModel updatedUser) {
         return usuarioRepository.findById(id).map(existingUser -> {
-            existingUser.update(updatedUser);
+            existingUser.update(updatedUser, passwordEncoder);
             return usuarioRepository.save(existingUser);
         });
-
-
     }
+
+//    public Optional<UsuarioModel> atualizarUsuario(UUID id, UsuarioModel updatedUser) {
+//        return usuarioRepository.findById(id).map(existingUser -> {
+//            existingUser.update(updatedUser);
+//            return usuarioRepository.save(existingUser);
+//        });
+//    }
 
     public Optional<UsuarioModel> deletarUsuario(UUID id) {
         Optional<UsuarioModel> usuarioExistente = usuarioRepository.findById(id);

@@ -33,6 +33,8 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
+
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioModel> atualizarUsuario(@PathVariable UUID id, @RequestBody UsuarioModel usuarioModel) {
         return usuarioService.atualizarUsuario(id, usuarioModel)
@@ -40,14 +42,18 @@ public class UsuarioController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarUsuario(@PathVariable UUID id) {
         Optional<UsuarioModel> usuarioDeletado = usuarioService.deletarUsuario(id);
         if (usuarioDeletado.isPresent()) {
-            return ResponseEntity.ok().body("Usuário deletado com sucesso.");
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+
 
 }

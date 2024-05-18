@@ -8,6 +8,7 @@ import org.hibernate.annotations.BatchSize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.Serializable;
 import java.time.*;
@@ -51,12 +52,21 @@ public class UsuarioModel implements UserDetails, Serializable {
     }
 
     //Método para atualizar os atributos do usuário com exceção de idPessoa, cpf, e dataCriacao.
-    public void update(UsuarioModel source) {
+    public void update(UsuarioModel source, BCryptPasswordEncoder passwordEncoder) {
         this.nome = source.nome;
         this.email = source.email;
-        this.password = source.password;
+        if (source.password != null && !source.password.isEmpty()) {
+            this.password = passwordEncoder.encode(source.password);
+        }
         this.role = source.role;
     }
+
+//    public void update(UsuarioModel source) {
+//        this.nome = source.nome;
+//        this.email = source.email;
+//        this.password = source.password;
+//        this.role = source.role;
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
