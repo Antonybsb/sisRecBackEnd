@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.Serializable;
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class UsuarioModel implements UserDetails, Serializable {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)  // Adicionando BatchSize para otimizar o carregamento das reclamações
-    private List<ReclamacaoModel> reclamacoes;
+    private List<ReclamacaoModel> reclamacoes = new ArrayList<>();
 
     public UsuarioModel(String nome, String cpf, String email, String password) {
         this.nome = nome;
@@ -102,5 +103,13 @@ public class UsuarioModel implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public List<ReclamacaoModel> getReclamacoes() {
+        return reclamacoes;
+    }
+
+    public void setReclamacoes(List<ReclamacaoModel> reclamacoes) {
+        this.reclamacoes = reclamacoes;
     }
 }

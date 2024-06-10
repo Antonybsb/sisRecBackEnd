@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ import java.util.UUID;
 @Table(name = "TB_RECLAMACAO")
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
 public class ReclamacaoModel implements Serializable {
 
     @Id
@@ -27,15 +26,16 @@ public class ReclamacaoModel implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataAberturaReclamacao = LocalDate.now();
 
-    @Transient
+
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataEncerramentoReclamacao;
     private String local;
     private String titulo;
     private String descricao;
     private String sugestaoResolucao;
+    private String nomeUsuario;
 
-    @Transient
+
     @Enumerated(EnumType.ORDINAL)
     private StatusReclamacao statusReclamacao;
 
@@ -44,16 +44,20 @@ public class ReclamacaoModel implements Serializable {
     @JsonIgnore
     private UsuarioModel usuario;
 
+    public ReclamacaoModel() {
+        super();
+    }
 
-    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, StatusReclamacao statusReclamacao,  UsuarioModel usuarioModel) {
+
+    public ReclamacaoModel(UUID idReclamacao, String local, String titulo, String descricao, String sugestaoResolucao, String nomeUsuario, StatusReclamacao statusReclamacao, UsuarioModel usuario) {
         this.idReclamacao = idReclamacao;
         this.local = local;
         this.titulo = titulo;
         this.descricao = descricao;
         this.sugestaoResolucao = sugestaoResolucao;
+        this.nomeUsuario = nomeUsuario;
         this.statusReclamacao = statusReclamacao;
-
-        this.usuario = usuarioModel;
+        this.usuario = usuario;
     }
 
     @Override

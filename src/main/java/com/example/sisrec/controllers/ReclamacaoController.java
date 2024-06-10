@@ -32,21 +32,59 @@ public class ReclamacaoController {
     @Autowired
     private UsuarioRepository userRepository;
 
+
     @PostMapping
     public ResponseEntity<ReclamacaoModel> criarReclamacao(@RequestBody ReclamacaoModel novaReclamacao, @AuthenticationPrincipal UsuarioModel usuario) {
-        novaReclamacao.setUsuario(usuario);
+        // Buscar o usuário associado ao email fornecido na reclamação
+        Optional<UsuarioModel> usuarioOptional = userRepository.findByEmail(usuario.getEmail());
 
-        ReclamacaoModel reclamacaoSalva = reclamacaoRepository.save(novaReclamacao);
+        // Verificar se o usuário foi encontrado
+        if (usuarioOptional.isPresent()) {
+            UsuarioModel usuarioEncontrado = usuarioOptional.get();
+            // Atribuir o nome do usuário ao campo nomeUsuario da reclamação
+            novaReclamacao.setNomeUsuario(usuarioEncontrado.getNome());
+            // Definir o usuário associado à reclamação
+            novaReclamacao.setUsuario(usuarioEncontrado);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoSalva);
+            // Salvar a reclamação no banco de dados
+            ReclamacaoModel reclamacaoSalva = reclamacaoRepository.save(novaReclamacao);
+
+            // Retornar a reclamação criada junto com o código 201 (Created)
+            return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoSalva);
+        } else {
+            // Se o usuário não foi encontrado, retornar um erro 404 (Not Found)
+            return ResponseEntity.notFound().build();
+        }
     }
 
+
+
+
+//    @PostMapping
+//    public ResponseEntity<ReclamacaoModel> criarReclamacao(@RequestBody ReclamacaoModel novaReclamacao, @AuthenticationPrincipal UsuarioModel usuario) {
+//        novaReclamacao.setUsuario(usuario);
+//
+//        ReclamacaoModel reclamacaoSalva = reclamacaoRepository.save(novaReclamacao);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(reclamacaoSalva);
+//    }
 
     @GetMapping
     public ResponseEntity<List<ReclamacaoModel>> buscarTodasReclamacoes() {
         List<ReclamacaoModel> reclamacoes = reclamacaoService.buscarTodasReclamacoes();
-            return ResponseEntity.status(HttpStatus.OK).body(reclamacoes);
+        for (ReclamacaoModel reclamacao : reclamacoes) {
+            String nomeUsuario = reclamacao.getUsuario().getNome();
+            reclamacao.setNomeUsuario(nomeUsuario);
         }
+        return ResponseEntity.status(HttpStatus.OK).body(reclamacoes);
+    }
+
+
+//    @GetMapping
+//    public ResponseEntity<List<ReclamacaoModel>> buscarTodasReclamacoes() {
+//        List<ReclamacaoModel> reclamacoes = reclamacaoService.buscarTodasReclamacoes();
+//            return ResponseEntity.status(HttpStatus.OK).body(reclamacoes);
+//        }
 
 
     @GetMapping("/{id}")

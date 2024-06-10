@@ -53,15 +53,37 @@ public class ReclamacaoService {
         }
     }
 
-
     public Optional<ReclamacaoModel> atualizarReclamacao(UUID id, ReclamacaoModel reclamacaoAtualizada) {
-        Optional<ReclamacaoModel> reclamacaoO = buscarReclamacaoPorId(id);
-        if (reclamacaoO.isEmpty()) {
+        Optional<ReclamacaoModel> reclamacaoExistente = reclamacaoRepository.findById(id);
+
+        if (reclamacaoExistente.isPresent()) {
+            ReclamacaoModel reclamacao = reclamacaoExistente.get();
+            // Atualiza os campos da reclamação existente com base na reclamação atualizada
+            // Certifique-se de que apenas os campos necessários estejam sendo atualizados
+            reclamacao.setTitulo(reclamacaoAtualizada.getTitulo());
+            reclamacao.setDescricao(reclamacaoAtualizada.getDescricao());
+            reclamacao.setLocal(reclamacaoAtualizada.getLocal());
+            reclamacao.setSugestaoResolucao(reclamacaoAtualizada.getSugestaoResolucao());
+            reclamacao.setStatusReclamacao(reclamacaoAtualizada.getStatusReclamacao());
+
+            // Salva a reclamação atualizada no repositório
+            return Optional.of(reclamacaoRepository.save(reclamacao));
+        } else {
             return Optional.empty();
         }
-        ReclamacaoModel reclamacaoExistente = reclamacaoO.get();
-        BeanUtils.copyProperties(reclamacaoAtualizada, reclamacaoExistente, "id", "dataAberturaReclamacao");
-        return Optional.of(reclamacaoRepository.save(reclamacaoExistente));
     }
+
+
+//    public Optional<ReclamacaoModel> atualizarReclamacao(UUID id, ReclamacaoModel reclamacaoAtualizada) {
+//        Optional<ReclamacaoModel> reclamacaoO = buscarReclamacaoPorId(id);
+//        if (reclamacaoO.isEmpty()) {
+//            return Optional.empty();
+//        }
+//        ReclamacaoModel reclamacaoExistente = reclamacaoO.get();
+//        BeanUtils.copyProperties(reclamacaoAtualizada, reclamacaoExistente, "id", "dataAberturaReclamacao");
+//        // Mantém o nomeUsuario existente
+//        reclamacaoExistente.setNomeUsuario(reclamacaoExistente.getNomeUsuario());
+//        return Optional.of(reclamacaoRepository.save(reclamacaoExistente));
+//    }
 
 }

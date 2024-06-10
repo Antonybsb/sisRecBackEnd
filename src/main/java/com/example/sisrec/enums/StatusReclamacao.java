@@ -4,7 +4,7 @@ package com.example.sisrec.enums;
 
 
 public enum StatusReclamacao {
-    ABERTO(0, "ABERTO"), ANDAMENTO(1, "ANDAMENTO"), CONCLUIDA(2, "RESOLVIDO");
+    ABERTO(0, "ABERTO"), ANDAMENTO(1, "ANDAMENTO"), CONCLUIDO(2, "CONCLUIDO");
 
     private Integer codigo;
     private String descricao;
